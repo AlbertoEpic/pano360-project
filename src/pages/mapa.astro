@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const mapId = '12hza1KgM8JUbWG2MOkn9JSsR_golMHcz';
+---
+
+<BaseLayout title="Mapa | PANO360">
+	<section class="intro">
+		<p class="eyebrow">Ubicaciones</p>
+		<h1>Mapa de panorámicas</h1>
+		<p class="lead">Explora dónde se han capturado todas nuestras fotografías esféricas.</p>
+	</section>
+
+	<section class="map-wrap">
+		<iframe
+			src={`https://www.google.com/maps/d/embed?mid=${mapId}&hl=es`}
+			title="Mapa de localización de las panorámicas de PANO360"
+			loading="lazy"
+			allowfullscreen
+		></iframe>
+	</section>
+</BaseLayout>
+
+<style>
+	.intro {
+		text-align: center;
+		padding: 1rem 0 2rem;
+	}
+	.eyebrow {
+		margin: 0;
+		color: var(--accent);
+		letter-spacing: 0.25em;
+		text-transform: uppercase;
+		font-size: 0.72rem;
+	}
+	.intro h1 {
+		margin: 0.75rem 0 0;
+		font-size: clamp(2.2rem, 4vw, 3.2rem);
+	}
+	.lead {
+		color: var(--muted);
+		margin: 0.75rem auto 0;
+		max-width: 560px;
+	}
+
+	.map-wrap {
+		position: relative;
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		border-radius: 18px;
+		overflow: hidden;
+		border: 1px solid var(--line);
+		box-shadow: var(--shadow);
+		background: rgba(10, 18, 24, 0.68);
+	}
+	.map-wrap iframe {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		border: 0;
+	}
+
+	@media (max-width: 640px) {
+		.map-wrap {
+			aspect-ratio: 4 / 5;
+		}
+	}
+</style>

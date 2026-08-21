@@ -1,0 +1,224 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { productData } from '../data/products';
+
+const shuffle = <T,>(items: T[]) => {
+	const shuffled = [...items];
+	for (let index = shuffled.length - 1; index > 0; index -= 1) {
+		const randomIndex = Math.floor(Math.random() * (index + 1));
+		[shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+	}
+	return shuffled;
+};
+const featured = shuffle(productData).slice(0, 3);
+---
+<BaseLayout title="PANO360 | Fotografías esféricas 360º">
+	<section class="hero">
+		<div class="hero-copy">
+			<p class="eyebrow">SQLP · Alberto Lafarga</p>
+			<h1>Descubre paisajes en 360°</h1>
+			<p class="lead">
+				Una colección de panoramas que convierten cada rincon del entorno en una experiencia visual
+				completa, inmersiva y memorable.
+			</p>
+			<div class="actions">
+				<a class="cta" href="/catalogo">Ver catálogo</a>
+				<a class="cta secondary" href="/como-funciona">Cómo funciona</a>
+			</div>
+		</div>
+		<div class="hero-stat">
+			<div class="stat-card">
+				<span class="stat-label">Experiencias</span>
+				<strong>10+</strong>
+			</div>
+			<div class="stat-card">
+				<span class="stat-label">Perspectiva</span>
+				<strong>360°</strong>
+			</div>
+		</div>
+	</section>
+
+	<section class="feature-strip">
+		<p>Panoramas de montaña, patrimonio, miradores y espacios singulares.</p>
+	</section>
+
+	<section class="featured">
+		<div class="section-head">
+			<h2>Destacadas</h2>
+			<a href="/catalogo">Ver todas</a>
+		</div>
+		<div class="grid">
+			{featured.map((product) => (
+				<article class="card">
+					<a href={`/productos/${product.slug}/`} aria-label={`Ver ${product.title}`}>
+						<img src={product.image} alt={product.title} loading="lazy" width="400" height="400" />
+					</a>
+					<div>
+						<h3>{product.title}</h3>
+						<p>{product.excerpt}</p>
+					</div>
+				</article>
+			))}
+		</div>
+	</section>
+</BaseLayout>
+
+<style>
+	.hero {
+		display: grid;
+		grid-template-columns: 1.4fr 0.6fr;
+		gap: 1.5rem;
+		align-items: center;
+		padding: 1.5rem 0 3rem;
+		max-width: 1100px;
+		margin: 0 auto;
+	}
+	.hero-copy {
+		background: rgba(12, 22, 31, 0.72);
+		padding: clamp(1.5rem, 3vw, 2.5rem);
+		border: 1px solid var(--line);
+		border-radius: 24px;
+		box-shadow: var(--shadow);
+		backdrop-filter: blur(8px);
+	}
+	.eyebrow {
+		margin: 0;
+		color: var(--accent);
+		letter-spacing: 0.25em;
+		text-transform: uppercase;
+		font-size: 0.72rem;
+	}
+	.hero h1 {
+		font-size: clamp(2.8rem, 5vw, 4.4rem);
+		line-height: 0.96;
+		margin: 0.8rem 0 1rem;
+	}
+	.lead {
+		margin: 0;
+		color: var(--muted);
+		line-height: 1.7;
+		max-width: 52ch;
+		font-size: 1.03rem;
+	}
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.8rem;
+		margin-top: 1.5rem;
+	}
+	.cta {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.85rem 1.5rem;
+		border-radius: 999px;
+		background: linear-gradient(135deg, var(--accent), #f0d9a7);
+		color: #0f1a22;
+		font-weight: 700;
+		text-decoration: none;
+		box-shadow: 0 14px 20px rgba(214, 181, 122, 0.18);
+	}
+	.cta.secondary {
+		background: transparent;
+		border: 1px solid var(--line);
+		color: var(--text);
+		box-shadow: none;
+	}
+	.hero-stat {
+		display: grid;
+		gap: 1rem;
+	}
+	.stat-card {
+		padding: 1.5rem 1.25rem;
+		border-radius: 20px;
+		background: linear-gradient(180deg, rgba(17, 29, 38, 0.9), rgba(11, 20, 28, 0.8));
+		border: 1px solid var(--line);
+		box-shadow: var(--shadow);
+	}
+	.stat-label {
+		display: block;
+		color: var(--muted);
+		font-size: 0.78rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		margin-bottom: 0.8rem;
+	}
+	.stat-card strong {
+		font-size: clamp(1.7rem, 4vw, 2.8rem);
+		font-family: 'Fraunces', serif;
+	}
+	.feature-strip {
+		margin: 0 auto 1.25rem;
+		padding: 0.85rem 1.25rem;
+		max-width: 1100px;
+		border: 1px solid var(--line);
+		border-radius: 16px;
+		background: rgba(255, 255, 255, 0.02);
+		text-align: center;
+		color: var(--muted);
+		letter-spacing: 0.04em;
+	}
+	.feature-strip p {
+		margin: 0;
+	}
+	.featured {
+		padding-top: 1rem;
+	}
+	.section-head {
+		display: flex;
+		justify-content: space-between;
+		align-items: end;
+		margin-bottom: 1.25rem;
+	}
+	.section-head h2 {
+		margin: 0;
+		font-size: clamp(1.8rem, 3vw, 2.4rem);
+	}
+	.section-head a {
+		color: var(--accent);
+		text-decoration: none;
+		font-weight: 600;
+	}
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+		gap: 1.5rem;
+	}
+	.card {
+		background: var(--surface);
+		border-radius: 18px;
+		overflow: hidden;
+		border: 1px solid var(--line);
+		box-shadow: var(--shadow);
+		transition: transform 0.2s ease, border-color 0.2s ease;
+	}
+	.card:hover {
+		transform: translateY(-3px);
+		border-color: rgba(111, 227, 255, 0.24);
+	}
+	.card img {
+		width: 100%;
+		aspect-ratio: 1 / 1;
+		object-fit: cover;
+		display: block;
+	}
+	.card div {
+		padding: 1rem 1rem 1.15rem;
+	}
+	.card h3 {
+		margin: 0 0 0.45rem;
+		font-size: 1.08rem;
+		line-height: 1.3;
+	}
+	.card p {
+		margin: 0;
+		color: var(--muted);
+		font-size: 0.92rem;
+		line-height: 1.6;
+	}
+	@media (max-width: 780px) {
+		.hero {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Cómo funciona | PANO360">
+	<section class="intro">
+		<p class="eyebrow">Proceso</p>
+		<h1>Cómo se crea una experiencia 360°</h1>
+	</section>
+
+	<section class="story">
+		<div class="card">
+			<h2>1. Captura</h2>
+			<p>Se fotografían paisajes, monumentos y rincones desde un punto estratégico para cubrir el entorno completo.</p>
+		</div>
+		<div class="card">
+			<h2>2. Edición</h2>
+			<p>La imagen se une y se prepara para ofrecer una mirada envolvente, con equilibrio y claridad visual.</p>
+		</div>
+		<div class="card">
+			<h2>3. Exploración</h2>
+			<p>El visitante puede recorrer la escena en todas direcciones y sentir la sensación de estar en ese lugar.</p>
+		</div>
+	</section>
+</BaseLayout>
+
+<style>
+	.intro { text-align: center; padding: 1rem 0 2rem; }
+	.eyebrow { margin: 0; color: var(--accent); letter-spacing: 0.25em; text-transform: uppercase; font-size: 0.72rem; }
+	.intro h1 { margin: 0.5rem 0 0; }
+	.story {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		gap: 1.5rem;
+		margin-top: 1rem;
+	}
+	.card {
+		background: rgba(18, 32, 44, 0.7);
+		border: 1px solid rgba(255, 255, 255, 0.06);
+		border-radius: 16px;
+		padding: 1.5rem;
+	}
+	.card h2 { margin-top: 0; }
+	.card p { color: var(--muted); line-height: 1.7; margin-bottom: 0; }
+</style>

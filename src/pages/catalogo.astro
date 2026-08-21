@@ -1,0 +1,150 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { productData } from '../data/products';
+
+const categories = [...new Set(productData.map((p) => p.category))].sort((a, b) =>
+	a.localeCompare(b, 'es', { sensitivity: 'base' })
+);
+---
+<BaseLayout title="Catálogo | PANO360">
+	<section class="intro">
+		<p class="eyebrow">El catálogo</p>
+		<h1>Panoramas de nuestro entorno</h1>
+	</section>
+
+	<section class="filters" aria-label="Filtros del catálogo">
+		<label>
+			<span>Texto</span>
+			<input id="filter-text" type="search" placeholder="Nombre o descripción" />
+		</label>
+		<label>
+			<span>Categoría</span>
+			<select id="filter-category">
+				<option value="">Todas</option>
+				{categories.map((category) => <option value={category}>{category}</option>)}
+			</select>
+		</label>
+	</section>
+
+	<section id="catalog-grid" class="grid">
+		{productData.map((product) => (
+			<article
+				class="card"
+				data-name={product.title.toLowerCase()}
+				data-description={product.excerpt.toLowerCase()}
+				data-category={product.category}
+			>
+				<a href={`/productos/${product.slug}/`} aria-label={`Ver ficha de ${product.title}`}>
+					<img src={product.image} alt={product.title} loading="lazy" width="400" height="400" />
+				</a>
+				<div>
+					<h2>{product.title}</h2>
+					<p>{product.excerpt}</p>
+					<div class="meta">
+						<span>{product.category}</span>
+					</div>
+				</div>
+			</article>
+		))}
+	</section>
+</BaseLayout>
+
+<script is:inline>
+	const textInput = document.querySelector('#filter-text');
+	const categorySelect = document.querySelector('#filter-category');
+	const cards = Array.from(document.querySelectorAll('#catalog-grid .card'));
+
+	const applyFilters = () => {
+		const text = (textInput?.value || '').trim().toLowerCase();
+		const category = categorySelect?.value || '';
+		cards.forEach((card) => {
+			const matchesText =
+				!text ||
+				card.dataset.name.includes(text) ||
+				card.dataset.description.includes(text);
+			const matchesCategory = !category || card.dataset.category === category;
+			card.style.display = matchesText && matchesCategory ? '' : 'none';
+		});
+	};
+
+	textInput?.addEventListener('input', applyFilters);
+	categorySelect?.addEventListener('change', applyFilters);
+</script>
+
+<style>
+	.intro {
+		text-align: center;
+		padding: 1rem 0 2rem;
+	}
+	.eyebrow {
+		margin: 0;
+		color: var(--accent);
+		letter-spacing: 0.25em;
+		text-transform: uppercase;
+		font-size: 0.72rem;
+	}
+	.intro h1 {
+		margin: 0.75rem 0 0;
+		font-size: clamp(2.2rem, 4vw, 3.2rem);
+	}
+
+	.filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.25rem;
+		justify-content: center;
+		margin: 0 auto 2rem;
+		padding: 1rem 1.2rem;
+		max-width: 720px;
+		background: rgba(10, 18, 24, 0.68);
+		border: 1px solid var(--line);
+		border-radius: 18px;
+		box-shadow: var(--shadow);
+		backdrop-filter: blur(8px);
+	}
+	.filters label {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		font-size: 0.8rem;
+		color: var(--muted);
+	}
+	.filters input,
+	.filters select {
+		padding: 0.75rem 0.8rem;
+		border-radius: 12px;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		background: rgba(5, 15, 21, 0.8);
+		color: var(--text);
+		min-width: 210px;
+		outline: none;
+	}
+
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		gap: 1.5rem;
+	}
+	.card {
+		background: rgba(12, 24, 34, 0.72);
+		border-radius: 18px;
+		overflow: hidden;
+		border: 1px solid var(--line);
+		box-shadow: var(--shadow);
+		transition: transform 0.2s ease, border-color 0.2s ease;
+	}
+	.card:hover {
+		transform: translateY(-2px);
+		border-color: rgba(111, 227, 255, 0.24);
+	}
+	.card img {
+		width: 100%;
+		aspect-ratio: 1 / 1;
+		object-fit: cover;
+		display: block;
+	}
+	.card div { padding: 1rem; }
+	.card h2 { margin: 0 0 0.45rem; font-size: 1.1rem; }
+	.card p { margin: 0; color: var(--muted); font-size: 0.92rem; line-height: 1.6; }
+	.meta { margin-top: 0.7rem; font-size: 0.74rem; color: var(--accent-2); text-transform: uppercase; letter-spacing: 0.08em; }
+</style>

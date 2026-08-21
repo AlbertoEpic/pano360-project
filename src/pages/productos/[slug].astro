@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { productData } from '../../data/products';
+
+export function getStaticPaths() {
+	return productData.map((product) => ({
+		params: { slug: product.slug },
+		props: { product },
+	}));
+}
+
+const { product } = Astro.props as { product: (typeof productData)[number] };
+const parsedDate = new Date(product.date);
+const formattedDate = Number.isNaN(parsedDate.getTime())
+	? product.date
+	: parsedDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+const paragraphs = product.description.split('\n\n').filter(Boolean);
+---
+<BaseLayout title={`${product.title} | PANO360`} description={product.excerpt}>
+	<link rel="stylesheet" href="/pannellum/pannellum.css" />
+
+	<article class="product">
+		<a class="back" href="/catalogo">&larr; Volver al catálogo</a>
+		<p class="eyebrow">{product.category}</p>
+		<h1>{product.title}</h1>
+		<p class="date">{formattedDate}</p>
+
+		<div id="panorama" class="viewer" data-panorama={product.panorama} data-title={product.title}></div>
+
+		<div class="description">
+			{paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+		</div>
+	</article>
+</BaseLayout>
+
+<script is:inline src="/pannellum/pannellum.js"></script>
+<script is:inline>
+	document.addEventListener('DOMContentLoaded', () => {
+		const el = document.getElementById('panorama');
+		if (el && window.pannellum) {
+			window.pannellum.viewer(el, {
+				type: 'equirectangular',
+				panorama: el.dataset.panorama,
+				title: el.dataset.title,
+				autoLoad: true,
+				compass: true,
+			});
+		}
+	});
+</script>
+
+<style>
+	.product {
+		max-width: 900px;
+		margin: 0 auto;
+	}
+	.back {
+		display: inline-block;
+		margin-bottom: 1.5rem;
+		color: var(--muted);
+		text-decoration: none;
+		font-size: 0.9rem;
+	}
+	.back:hover { color: var(--accent); }
+	.eyebrow {
+		margin: 0;
+		color: var(--accent);
+		letter-spacing: 0.25em;
+		text-transform: uppercase;
+		font-size: 0.72rem;
+	}
+	h1 { margin: 0.5rem 0 0.25rem; }
+	.date { color: var(--muted); margin: 0 0 1.5rem; font-size: 0.9rem; }
+	.viewer {
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		border-radius: 14px;
+		overflow: hidden;
+		background: #000;
+		margin-bottom: 2rem;
+	}
+	.description p {
+		line-height: 1.7;
+		color: var(--text);
+	}
+</style>
