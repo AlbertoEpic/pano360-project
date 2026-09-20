@@ -24,7 +24,7 @@ const toBasePath = (path = '') => `/${path.replace(/^\/+/, '')}`;
 	<body>
 		<header class="top">
 			<a class="brand" href={toBasePath('')}>
-				<span class="brand-text">PANO360</span>
+				<img src="/logo_Pano360_600x150.png" alt="PANO360" class="brand-logo" width="180" height="45" />
 			</a>
 			<button class="menu-toggle" type="button" aria-label="Abrir menú" aria-controls="main-nav" aria-expanded="false">
 				<span></span>
@@ -142,6 +142,17 @@ const toBasePath = (path = '') => `/${path.replace(/^\/+/, '')}`;
 				font-weight: 700;
 				letter-spacing: 0.12em;
 				font-size: 1.1rem;
+			}
+
+			.brand-logo {
+				height: 45px;
+				width: auto;
+				display: block;
+				filter: drop-shadow(0 0 24px rgba(214, 181, 122, 0.95)) drop-shadow(0 0 48px rgba(214, 181, 122, 0.7)) drop-shadow(0 0 72px rgba(214, 181, 122, 0.4)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+			}
+
+			.brand:hover .brand-logo {
+				filter: drop-shadow(0 0 32px rgba(214, 181, 122, 1)) drop-shadow(0 0 64px rgba(214, 181, 122, 0.8)) drop-shadow(0 0 96px rgba(214, 181, 122, 0.5)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 			}
 
 			.menu-toggle {

@@ -14,10 +14,10 @@ function stripHtml(html) {
 		.trim();
 }
 
-function findExt(dir, slug) {
+function localAsset(dir, folder, slug, fallback) {
 	const files = fs.readdirSync(dir);
 	const found = files.find((f) => f.startsWith(`${slug}.`));
-	return found ? found.split('.').pop() : 'jpg';
+	return found ? `/${folder}/${found}` : fallback;
 }
 
 const productsDir = path.join(__dirname, '..', 'public', 'products');
@@ -26,12 +26,12 @@ const panoramasDir = path.join(__dirname, '..', 'public', 'panoramas');
 const out = products.map((p) => ({
 	slug: p.slug,
 	title: p.title,
-	category: p.categories[0] || 'Sin categoría',
+	category: p.categories.join(', ') || 'Sin categoría',
 	excerpt: stripHtml(p.excerpt).slice(0, 220),
 	description: stripHtml(p.description),
 	date: p.date.split(' ')[0],
-	image: `/products/${p.slug}.${findExt(productsDir, p.slug)}`,
-	panorama: `/panoramas/${p.slug}.${findExt(panoramasDir, p.slug)}`,
+	image: localAsset(productsDir, 'products', p.slug, p.thumbnailUrl),
+	panorama: localAsset(panoramasDir, 'panoramas', p.slug, p.panoramaUrl),
 }));
 
 fs.writeFileSync(path.join(__dirname, 'products-clean.json'), JSON.stringify(out, null, 2), 'utf8');
