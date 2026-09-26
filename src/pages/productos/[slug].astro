@@ -28,7 +28,13 @@ const paragraphs = product.description.split('\n\n').filter(Boolean);
 		<div id="panorama" class="viewer" data-panorama={product.panorama} data-title={product.title}></div>
 
 		<div class="description">
-			{paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+			{paragraphs.map((paragraph) =>
+				product.slug === 'tres-guegas-2-303m-verano' && paragraph.startsWith('Puedes ver el aspecto') ? (
+					<p>Puedes ver el aspecto de este lugar en <a href="/productos/tres-guegas-2-303m/">pleno invierno</a>.</p>
+				) : (
+					<p>{paragraph}</p>
+				)
+			)}
 		</div>
 	</article>
 </BaseLayout>

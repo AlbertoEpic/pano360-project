@@ -2,6 +2,20 @@ const fs = require('fs');
 const path = require('path');
 
 const products = JSON.parse(fs.readFileSync(path.join(__dirname, 'extracted-products.json'), 'utf8'));
+const summerGuegas = products.find((product) => product.slug === 'tres-guegas-2-303m');
+const additionalProducts = summerGuegas
+	? [
+		{
+			...summerGuegas,
+			slug: 'tres-guegas-2-303m-verano',
+			title: 'Tres Güegas (2.303m) - verano',
+			date: '2026-09-22 08:23:00',
+			excerpt: 'Vista estival del Pico de las Tres Güegas.',
+			description:
+				'Martes, 22 de septiembre de 2026, a las 8:23am. Un sereno amanecer en la cima de este pico, después de subir en e-bike desde el parking de Sextas de Formigal.\n\nPuedes ver el aspecto de este lugar en pleno invierno.',
+		},
+	]
+	: [];
 
 function stripHtml(html) {
 	return html
@@ -23,7 +37,7 @@ function localAsset(dir, folder, slug, fallback) {
 const productsDir = path.join(__dirname, '..', 'public', 'products');
 const panoramasDir = path.join(__dirname, '..', 'public', 'panoramas');
 
-const out = products.map((p) => ({
+const out = [...products, ...additionalProducts].map((p) => ({
 	slug: p.slug,
 	title: p.title,
 	category: p.categories.join(', ') || 'Sin categoría',

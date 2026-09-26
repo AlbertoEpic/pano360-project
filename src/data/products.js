@@ -1188,5 +1188,15 @@ export const productData = [
     "date": "2026-04-27",
     "image": "/products/garmo-negro-3-064m-2.jpg",
     "panorama": "/panoramas/garmo-negro-3-064m-2.jpg"
+  },
+  {
+    "slug": "tres-guegas-2-303m-verano",
+    "title": "Tres Güegas (2.303m) - verano",
+    "category": "Cimas",
+    "excerpt": "Vista estival del Pico de las Tres Güegas.",
+    "description": "Martes, 22 de septiembre de 2026, a las 8:23am. Un sereno amanecer en la cima de este pico, después de subir en e-bike desde el parking de Sextas de Formigal.\n\nPuedes ver el aspecto de este lugar en pleno invierno.",
+    "date": "2026-09-22",
+    "image": "/products/tres-guegas-2-303m-verano.jpg",
+    "panorama": "/panoramas/tres-guegas-2-303m-verano.jpg"
   }
 ];
