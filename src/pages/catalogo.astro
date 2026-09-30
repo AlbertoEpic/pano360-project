@@ -24,6 +24,13 @@ const categories = [...new Set(productData.map((p) => p.category))].sort((a, b) 
 				{categories.map((category) => <option value={category}>{category}</option>)}
 			</select>
 		</label>
+		<label>
+			<span>Ordenar por</span>
+			<select id="sort-order">
+				<option value="alphabetical">Orden alfabético</option>
+				<option value="date">Fecha de publicación</option>
+			</select>
+		</label>
 	</section>
 	<div id="catalog-empty" class="empty-state" hidden>
 		<p role="status" aria-live="polite">No hay fichas que coincidan con esos filtros.</p>
@@ -37,6 +44,7 @@ const categories = [...new Set(productData.map((p) => p.category))].sort((a, b) 
 				data-name={product.title.toLowerCase()}
 				data-description={product.excerpt.toLowerCase()}
 				data-category={product.category}
+				data-date={product.date}
 			>
 				<a href={`/productos/${product.slug}/`} aria-label={`Ver ficha de ${product.title}`}>
 					<img src={product.image} alt={product.title} loading="lazy" width="400" height="400" />
@@ -56,6 +64,8 @@ const categories = [...new Set(productData.map((p) => p.category))].sort((a, b) 
 <script is:inline>
 	const textInput = document.querySelector('#filter-text');
 	const categorySelect = document.querySelector('#filter-category');
+	const sortSelect = document.querySelector('#sort-order');
+	const catalogGrid = document.querySelector('#catalog-grid');
 	const emptyState = document.querySelector('#catalog-empty');
 	const clearFiltersButton = document.querySelector('#clear-filters');
 	const cards = Array.from(document.querySelectorAll('#catalog-grid .card'));
@@ -63,6 +73,15 @@ const categories = [...new Set(productData.map((p) => p.category))].sort((a, b) 
 	const applyFilters = () => {
 		const text = (textInput?.value || '').trim().toLowerCase();
 		const category = categorySelect?.value || '';
+		const sortBy = sortSelect?.value || 'alphabetical';
+		const sortedCards = [...cards].sort((firstCard, secondCard) => {
+			if (sortBy === 'date') {
+				const dateDifference = Date.parse(secondCard.dataset.date) - Date.parse(firstCard.dataset.date);
+				if (dateDifference !== 0) return dateDifference;
+			}
+			return firstCard.dataset.name.localeCompare(secondCard.dataset.name, 'es', { sensitivity: 'base' });
+		});
+		sortedCards.forEach((card) => catalogGrid?.append(card));
 		let visibleCount = 0;
 		cards.forEach((card) => {
 			const matchesText =
@@ -79,12 +98,16 @@ const categories = [...new Set(productData.map((p) => p.category))].sort((a, b) 
 
 	textInput?.addEventListener('input', applyFilters);
 	categorySelect?.addEventListener('change', applyFilters);
+	sortSelect?.addEventListener('change', applyFilters);
 	clearFiltersButton?.addEventListener('click', () => {
 		if (textInput) textInput.value = '';
 		if (categorySelect) categorySelect.value = '';
+		if (sortSelect) sortSelect.value = 'alphabetical';
 		applyFilters();
 		textInput?.focus();
 	});
+
+	applyFilters();
 </script>
 
 <style>
