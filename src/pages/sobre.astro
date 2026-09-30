@@ -3,47 +3,141 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="Sobre nosotros | PANO360">
-	<section class="intro">
-		<p class="eyebrow">Nuestra mirada</p>
-		<h1>Fotografías que invitan a mirar más allá</h1>
+	<section class="about" aria-labelledby="about-title">
+		<div class="about-copy">
+			<p class="eyebrow">Nuestra mirada</p>
+			<h1 id="about-title">Fotografías que invitan a mirar más allá</h1>
+			<p class="lead">
+				PANO360 nace de la idea de convertir lugares reales en experiencias visuales envolventes.
+				Cada imagen abre una puerta a un paisaje, un monumento o un punto de vista único.
+			</p>
+			<p class="credit">
+				AlbertoEpic es el culpable de esta web, dentro del universo SQLP, presente en internet desde el siglo pasado con
+				<a href="https://www.soloquedalopeor.com">www.soloquedalopeor.com</a>
+			</p>
+			<a class="cta" href="/catalogo">Explorar catálogo</a>
+		</div>
+
+		<figure class="portrait">
+			<img
+				src="/ChatGPT%20Image%208%20sept%202026,%2013_14_11.png"
+				alt="Ilustración de AlbertoEpic trabajando con su gato, rodeado de tecnología y naturaleza"
+				width="1254"
+				height="1254"
+				fetchpriority="high"
+			/>
+			<figcaption>AlbertoEpic <span>·</span> Universo SQLP</figcaption>
+		</figure>
 	</section>
 
-	<section class="content">
+	<section class="collection" aria-labelledby="collection-title">
+		<h2 id="collection-title">La colección</h2>
 		<p>
-			PANO360 nace de la idea de convertir lugares reales en experiencias visuales envolventes.
-			La intención es ofrecer un recorrido de sensaciones donde cada imagen funciona como una
-			puerta abierta a un paisaje, un monumento o un punto de vista único.
+			Reúne escenas de entornos naturales, urbanos y patrimoniales, con una intención narrativa y estética cercana a la observación de la belleza del mundo real.
 		</p>
-		<p>
-			La colección está construida a partir de escenas capturadas en entornos naturales,
-			urbanos y patrimoniales, con una intención narrativa y estética muy cercana a la observación
-			de la belleza del mundo real.
-		</p>
-		<a class="cta" href="/catalogo">Explorar catálogo</a>
 	</section>
 </BaseLayout>
 
 <style>
-	.intro { text-align: center; padding: 1rem 0 2rem; }
-	.eyebrow { margin: 0; color: var(--accent); letter-spacing: 0.25em; text-transform: uppercase; font-size: 0.72rem; }
-	.intro h1 { margin: 0.5rem 0 0; }
-	.content {
-		max-width: 760px;
+	.about {
+		display: grid;
+		grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+		align-items: center;
+		gap: 3rem;
+		max-width: 1100px;
+		min-height: 620px;
 		margin: 0 auto;
-		padding: 2rem;
-		background: rgba(18, 32, 44, 0.7);
-		border: 1px solid rgba(255, 255, 255, 0.06);
-		border-radius: 16px;
+		padding: 1rem 0 3rem;
 	}
-	.content p { color: var(--muted); line-height: 1.8; }
+	.about-copy { max-width: 34rem; }
+	.eyebrow {
+		margin: 0;
+		color: var(--accent);
+		font-size: 0.75rem;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+	}
+	.about h1 {
+		margin: 0.75rem 0 1.25rem;
+		font-size: 3.25rem;
+		line-height: 1.04;
+	}
+	.lead {
+		margin: 0;
+		color: var(--muted);
+		font-size: 1.08rem;
+		line-height: 1.75;
+	}
+	.credit {
+		margin: 1.75rem 0 0;
+		padding-top: 1.25rem;
+		border-top: 1px solid var(--line);
+		line-height: 1.75;
+	}
+	.credit a { color: var(--accent); }
+	.portrait {
+		min-width: 0;
+		margin: 0;
+	}
+	.portrait img {
+		width: 100%;
+		height: auto;
+		border-radius: var(--radius-card);
+	}
+	.portrait figcaption {
+		margin-top: 0.75rem;
+		color: var(--muted);
+		font-size: 0.8rem;
+		text-transform: uppercase;
+	}
+	.portrait figcaption span { color: var(--accent); }
+	.collection {
+		display: grid;
+		grid-template-columns: 180px minmax(0, 1fr);
+		gap: 2rem;
+		align-items: baseline;
+		max-width: 900px;
+		margin: 0 auto;
+		padding: 1.5rem 0 0;
+		border-top: 1px solid var(--line);
+	}
+	.collection h2 {
+		margin: 0;
+		color: var(--accent);
+		font-size: 1rem;
+		font-family: 'Space Grotesk', sans-serif;
+		font-weight: 500;
+	}
+	.collection p {
+		margin: 0;
+		color: var(--muted);
+		line-height: 1.75;
+	}
 	.cta {
-		display: inline-block;
-		margin-top: 0.5rem;
+		display: inline-flex;
+		align-items: center;
+		margin-top: 1.5rem;
 		padding: 0.75rem 1.25rem;
-		border-radius: 999px;
+		border-radius: var(--radius-control);
 		background: var(--accent);
 		color: #06141c;
 		text-decoration: none;
 		font-weight: 600;
+	}
+	.cta:hover { background: var(--accent-2); }
+	@media (max-width: 860px) {
+		.about {
+			grid-template-columns: minmax(0, 1fr);
+			gap: 1.5rem;
+			min-height: 0;
+			padding: 0 0 2.5rem;
+		}
+		.portrait { order: -1; }
+		.portrait img { max-height: 560px; object-fit: contain; }
+		.about h1 { font-size: 2.5rem; }
+		.collection { grid-template-columns: 1fr; gap: 0.5rem; }
+	}
+	@media (max-width: 420px) {
+		.about h1 { font-size: 2.15rem; }
 	}
 </style>

@@ -8,20 +8,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 		<h1>Cómo se crea una experiencia 360°</h1>
 	</section>
 
-	<section class="story">
-		<div class="card">
-			<h2>1. Captura</h2>
+	<ol class="story">
+		<li class="card">
+			<h2>Captura</h2>
 			<p>Se fotografían paisajes, monumentos y rincones desde un punto estratégico para cubrir el entorno completo.</p>
-		</div>
-		<div class="card">
-			<h2>2. Edición</h2>
+		</li>
+		<li class="card">
+			<h2>Edición</h2>
 			<p>La imagen se une y se prepara para ofrecer una mirada envolvente, con equilibrio y claridad visual.</p>
-		</div>
-		<div class="card">
-			<h2>3. Exploración</h2>
+		</li>
+		<li class="card">
+			<h2>Exploración</h2>
 			<p>El visitante puede recorrer la escena en todas direcciones y sentir la sensación de estar en ese lugar.</p>
-		</div>
-	</section>
+		</li>
+	</ol>
 </BaseLayout>
 
 <style>
@@ -33,11 +33,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 		gap: 1.5rem;
 		margin-top: 1rem;
+		padding-left: 1.5rem;
+	}
+	.story li::marker {
+		color: var(--accent);
+		font-weight: 700;
 	}
 	.card {
 		background: rgba(18, 32, 44, 0.7);
 		border: 1px solid rgba(255, 255, 255, 0.06);
-		border-radius: 16px;
+		border-radius: var(--radius-card);
 		padding: 1.5rem;
 	}
 	.card h2 { margin-top: 0; }

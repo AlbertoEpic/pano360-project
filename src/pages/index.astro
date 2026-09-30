@@ -10,29 +10,31 @@ const shuffle = <T,>(items: T[]) => {
 	}
 	return shuffled;
 };
-const featured = shuffle(productData).slice(0, 3);
+const shuffledProducts = shuffle(productData);
+const heroProduct = shuffledProducts[0];
+const featured = shuffledProducts.slice(1, 5);
 ---
 <BaseLayout title="PANO360 | Fotografías esféricas 360º">
 	<section class="hero">
+		{heroProduct && (
+			<a class="hero-visual" href={`/productos/${heroProduct.slug}/`} aria-label={`Explorar ${heroProduct.title}`}>
+				<img src={heroProduct.image} alt={heroProduct.title} fetchpriority="high" width="800" height="800" />
+				<span class="hero-caption">
+					<span class="hero-kicker">Panorámica seleccionada</span>
+					<strong>{heroProduct.title}</strong>
+					<span>Explorar panorama <span aria-hidden="true">↗</span></span>
+				</span>
+			</a>
+		)}
 		<div class="hero-copy">
 			<p class="eyebrow">SQLP · Alberto Lafarga</p>
-			<h1>Bienvenido a Pano36O de SQLP, el portal #1 de panorámicas con cimas etiquetadas.</h1>
+			<h1>Explora el entorno en panorámicas 360°.</h1>
 			<p class="lead">
-				Con un número creciente de fotos esféricas 360º, SóloQuedaLopeor se convierte en la web de referencia para todos aquellos 'cibermontañeros' que no tienen tiempo/ganas/fuerzas de ascender a cimas.
+				Cimas, paisajes, miradores y patrimonio para recorrer desde una nueva perspectiva.
 			</p>
 			<div class="actions">
 				<a class="cta" href="/catalogo">Ver catálogo</a>
 				<a class="cta secondary" href="/como-funciona">Cómo funciona</a>
-			</div>
-		</div>
-		<div class="hero-stat">
-			<div class="stat-card">
-				<span class="stat-label">Experiencias</span>
-				<strong>10+</strong>
-			</div>
-			<div class="stat-card">
-				<span class="stat-label">Perspectiva</span>
-				<strong>360°</strong>
 			</div>
 		</div>
 	</section>
@@ -65,8 +67,8 @@ const featured = shuffle(productData).slice(0, 3);
 <style>
 	.hero {
 		display: grid;
-		grid-template-columns: 1.4fr 0.6fr;
-		gap: 1.5rem;
+		grid-template-columns: 0.9fr 1.1fr;
+		gap: 2rem;
 		align-items: center;
 		padding: 1.5rem 0 3rem;
 		max-width: 1100px;
@@ -76,7 +78,7 @@ const featured = shuffle(productData).slice(0, 3);
 		background: rgba(12, 22, 31, 0.72);
 		padding: clamp(1.5rem, 3vw, 2.5rem);
 		border: 1px solid var(--line);
-		border-radius: 24px;
+		border-radius: var(--radius-card);
 		box-shadow: var(--shadow);
 		backdrop-filter: blur(8px);
 	}
@@ -110,7 +112,7 @@ const featured = shuffle(productData).slice(0, 3);
 		align-items: center;
 		justify-content: center;
 		padding: 0.85rem 1.5rem;
-		border-radius: 999px;
+		border-radius: var(--radius-control);
 		background: linear-gradient(135deg, var(--accent), #f0d9a7);
 		color: #0f1a22;
 		font-weight: 700;
@@ -123,28 +125,45 @@ const featured = shuffle(productData).slice(0, 3);
 		color: var(--text);
 		box-shadow: none;
 	}
-	.hero-stat {
-		display: grid;
-		gap: 1rem;
-	}
-	.stat-card {
-		padding: 1.5rem 1.25rem;
-		border-radius: 20px;
-		background: linear-gradient(180deg, rgba(17, 29, 38, 0.9), rgba(11, 20, 28, 0.8));
+	.hero-visual {
+		position: relative;
+		min-height: 100%;
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
 		border: 1px solid var(--line);
-		box-shadow: var(--shadow);
+		border-radius: var(--radius-card);
+		background: var(--bg-3);
+		text-decoration: none;
 	}
-	.stat-label {
-		display: block;
-		color: var(--muted);
-		font-size: 0.78rem;
-		letter-spacing: 0.16em;
+	.hero-visual img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.35s ease;
+	}
+	.hero-visual:hover img { transform: scale(1.03); }
+	.hero-caption {
+		position: absolute;
+		inset: auto 0 0;
+		display: grid;
+		gap: 0.4rem;
+		padding: 3.5rem 1.25rem 1.25rem;
+		background: linear-gradient(transparent, rgba(4, 11, 18, 0.92));
+	}
+	.hero-kicker {
+		color: var(--accent);
+		font-size: 0.75rem;
 		text-transform: uppercase;
-		margin-bottom: 0.8rem;
 	}
-	.stat-card strong {
-		font-size: clamp(1.7rem, 4vw, 2.8rem);
+	.hero-caption strong {
 		font-family: 'Fraunces', serif;
+		font-size: 1.35rem;
+	}
+	.hero-caption > span:last-child {
+		color: var(--muted);
+		font-size: 0.88rem;
 	}
 	.feature-strip {
 		margin: 0 auto 1.25rem;
@@ -180,12 +199,12 @@ const featured = shuffle(productData).slice(0, 3);
 	}
 	.grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
 		gap: 1.5rem;
 	}
 	.card {
 		background: var(--surface);
-		border-radius: 18px;
+		border-radius: var(--radius-card);
 		overflow: hidden;
 		border: 1px solid var(--line);
 		box-shadow: var(--shadow);
@@ -193,8 +212,9 @@ const featured = shuffle(productData).slice(0, 3);
 	}
 	.card:hover {
 		transform: translateY(-3px);
-		border-color: rgba(111, 227, 255, 0.24);
+		border-color: var(--card-hover);
 	}
+	.card:focus-within { border-color: var(--card-hover); }
 	.card img {
 		width: 100%;
 		aspect-ratio: 1 / 1;
@@ -217,7 +237,15 @@ const featured = shuffle(productData).slice(0, 3);
 	}
 	@media (max-width: 780px) {
 		.hero {
-			grid-template-columns: 1fr;
+			grid-template-columns: minmax(0, 1fr);
 		}
+		.hero-visual {
+			order: -1;
+			aspect-ratio: 1;
+		}
+		.hero h1 { font-size: 2.6rem; }
+	}
+	@media (max-width: 360px) {
+		.hero h1 { font-size: 2rem; }
 	}
 </style>

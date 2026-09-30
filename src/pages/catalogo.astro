@@ -25,6 +25,10 @@ const categories = [...new Set(productData.map((p) => p.category))].sort((a, b) 
 			</select>
 		</label>
 	</section>
+	<div id="catalog-empty" class="empty-state" hidden>
+		<p role="status" aria-live="polite">No hay fichas que coincidan con esos filtros.</p>
+		<button id="clear-filters" type="button">Limpiar filtros</button>
+	</div>
 
 	<section id="catalog-grid" class="grid">
 		{productData.map((product) => (
@@ -52,23 +56,35 @@ const categories = [...new Set(productData.map((p) => p.category))].sort((a, b) 
 <script is:inline>
 	const textInput = document.querySelector('#filter-text');
 	const categorySelect = document.querySelector('#filter-category');
+	const emptyState = document.querySelector('#catalog-empty');
+	const clearFiltersButton = document.querySelector('#clear-filters');
 	const cards = Array.from(document.querySelectorAll('#catalog-grid .card'));
 
 	const applyFilters = () => {
 		const text = (textInput?.value || '').trim().toLowerCase();
 		const category = categorySelect?.value || '';
+		let visibleCount = 0;
 		cards.forEach((card) => {
 			const matchesText =
 				!text ||
 				card.dataset.name.includes(text) ||
 				card.dataset.description.includes(text);
 			const matchesCategory = !category || card.dataset.category === category;
-			card.style.display = matchesText && matchesCategory ? '' : 'none';
+			const isVisible = matchesText && matchesCategory;
+			card.style.display = isVisible ? '' : 'none';
+			if (isVisible) visibleCount += 1;
 		});
+		if (emptyState) emptyState.hidden = visibleCount > 0;
 	};
 
 	textInput?.addEventListener('input', applyFilters);
 	categorySelect?.addEventListener('change', applyFilters);
+	clearFiltersButton?.addEventListener('click', () => {
+		if (textInput) textInput.value = '';
+		if (categorySelect) categorySelect.value = '';
+		applyFilters();
+		textInput?.focus();
+	});
 </script>
 
 <style>
@@ -98,7 +114,7 @@ const categories = [...new Set(productData.map((p) => p.category))].sort((a, b) 
 		max-width: 720px;
 		background: rgba(10, 18, 24, 0.68);
 		border: 1px solid var(--line);
-		border-radius: 18px;
+		border-radius: var(--radius-card);
 		box-shadow: var(--shadow);
 		backdrop-filter: blur(8px);
 	}
@@ -112,22 +128,42 @@ const categories = [...new Set(productData.map((p) => p.category))].sort((a, b) 
 	.filters input,
 	.filters select {
 		padding: 0.75rem 0.8rem;
-		border-radius: 12px;
+		border-radius: var(--radius-control);
 		border: 1px solid rgba(255, 255, 255, 0.12);
 		background: rgba(5, 15, 21, 0.8);
 		color: var(--text);
 		min-width: 210px;
-		outline: none;
 	}
 
 	.grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
 		gap: 1.5rem;
 	}
+	.empty-state {
+		margin: 0 auto 2rem;
+		padding: 1.5rem;
+		max-width: 720px;
+		text-align: center;
+		border: 1px dashed var(--line);
+		border-radius: var(--radius-card);
+		color: var(--muted);
+	}
+	.empty-state[hidden] { display: none; }
+	.empty-state p { margin: 0 0 1rem; }
+	.empty-state button {
+		padding: 0.7rem 1rem;
+		border: 1px solid var(--line);
+		border-radius: var(--radius-control);
+		background: transparent;
+		color: var(--text);
+		font: inherit;
+		cursor: pointer;
+	}
+	.empty-state button:hover { border-color: var(--accent-2); }
 	.card {
 		background: rgba(12, 24, 34, 0.72);
-		border-radius: 18px;
+		border-radius: var(--radius-card);
 		overflow: hidden;
 		border: 1px solid var(--line);
 		box-shadow: var(--shadow);
@@ -135,8 +171,9 @@ const categories = [...new Set(productData.map((p) => p.category))].sort((a, b) 
 	}
 	.card:hover {
 		transform: translateY(-2px);
-		border-color: rgba(111, 227, 255, 0.24);
+		border-color: var(--card-hover);
 	}
+	.card:focus-within { border-color: var(--card-hover); }
 	.card img {
 		width: 100%;
 		aspect-ratio: 1 / 1;

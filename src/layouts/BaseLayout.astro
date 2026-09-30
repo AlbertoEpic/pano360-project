@@ -5,6 +5,7 @@ export interface Props {
 }
 const { title, description = 'PANO360 · Fotografías esféricas 360º de SQLP' } = Astro.props as Props;
 const toBasePath = (path = '') => `/${path.replace(/^\/+/, '')}`;
+const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
 ---
 <!doctype html>
 <html lang="es">
@@ -31,12 +32,12 @@ const toBasePath = (path = '') => `/${path.replace(/^\/+/, '')}`;
 				<span></span>
 				<span></span>
 			</button>
-			<nav class="top-nav" id="main-nav">
-				<a href={toBasePath('')}>Inicio</a>
-				<a href={toBasePath('catalogo')}>Catálogo</a>
-				<a href={toBasePath('mapa')}>Mapa</a>
-				<a href={toBasePath('como-funciona')}>Cómo funciona</a>
-				<a href={toBasePath('sobre')}>Sobre nosotros</a>
+			<nav class="top-nav" id="main-nav" aria-label="Navegación principal">
+				<a href={toBasePath('')} aria-current={currentPath === '/' ? 'page' : undefined}>Inicio</a>
+				<a href={toBasePath('catalogo')} aria-current={currentPath === '/catalogo' || currentPath.startsWith('/productos/') ? 'page' : undefined}>Catálogo</a>
+				<a href={toBasePath('mapa')} aria-current={currentPath === '/mapa' ? 'page' : undefined}>Mapa</a>
+				<a href={toBasePath('como-funciona')} aria-current={currentPath === '/como-funciona' ? 'page' : undefined}>Cómo funciona</a>
+				<a href={toBasePath('sobre')} aria-current={currentPath === '/sobre' ? 'page' : undefined}>Sobre nosotros</a>
 			</nav>
 		</header>
 
@@ -70,6 +71,13 @@ const toBasePath = (path = '') => `/${path.replace(/^\/+/, '')}`;
 					menuToggle.setAttribute('aria-label', shouldOpen ? 'Cerrar menú' : 'Abrir menú');
 				});
 
+				document.addEventListener('keydown', (event) => {
+					if (event.key === 'Escape' && menuToggle.getAttribute('aria-expanded') === 'true') {
+						closeMenu();
+						menuToggle.focus();
+					}
+				});
+
 				topNav.querySelectorAll('a').forEach((link) => {
 					link.addEventListener('click', closeMenu);
 				});
@@ -93,6 +101,9 @@ const toBasePath = (path = '') => `/${path.replace(/^\/+/, '')}`;
 				--muted: #b7cbd4;
 				--accent: #d6b57a;
 				--accent-2: #89d0d1;
+				--card-hover: rgba(137, 208, 209, 0.42);
+				--radius-card: 16px;
+				--radius-control: 12px;
 				--line: rgba(255, 255, 255, 0.08);
 				--shadow: 0 18px 36px rgba(0, 0, 0, 0.22);
 			}
@@ -114,6 +125,10 @@ const toBasePath = (path = '') => `/${path.replace(/^\/+/, '')}`;
 			h1, h2, h3 { font-family: 'Fraunces', serif; }
 			a { color: inherit; }
 			img { max-width: 100%; display: block; }
+			:focus-visible {
+				outline: 3px solid var(--accent-2);
+				outline-offset: 3px;
+			}
 
 			.top {
 				position: sticky;
@@ -209,13 +224,21 @@ const toBasePath = (path = '') => `/${path.replace(/^\/+/, '')}`;
 			}
 
 			@media (max-width: 900px) {
-				.menu-toggle { display: flex; }
+				.top { flex-wrap: wrap; }
+				.top.is-menu-ready { flex-wrap: nowrap; }
+				.top.is-menu-ready .menu-toggle { display: flex; }
 				.top-nav {
+					flex-direction: column;
+					align-items: stretch;
+					flex-basis: 100%;
+					padding: 1rem 0;
+					gap: 0.5rem;
+				}
+				.top.is-menu-ready .top-nav {
 					position: absolute;
 					top: 100%;
 					right: 0;
 					left: 0;
-					flex-direction: column;
 					align-items: flex-start;
 					background: rgba(4, 11, 18, 0.97);
 					padding: 1rem 1.5rem 1.25rem;
@@ -223,7 +246,17 @@ const toBasePath = (path = '') => `/${path.replace(/^\/+/, '')}`;
 					display: none;
 					border-bottom: 1px solid var(--line);
 				}
-				.top-nav.is-open { display: flex; }
+				.top.is-menu-ready .top-nav.is-open { display: flex; }
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				html { scroll-behavior: auto; }
+				*, *::before, *::after {
+					animation-duration: 0.01ms !important;
+					animation-iteration-count: 1 !important;
+					transition-duration: 0.01ms !important;
+					scroll-behavior: auto !important;
+				}
 			}
 		</style>
 	</body>

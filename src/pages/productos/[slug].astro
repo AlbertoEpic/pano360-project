@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { productData } from '../../data/products';
+import { siFacebook, siWhatsapp, siX } from 'simple-icons';
 
 export function getStaticPaths() {
 	return productData.map((product) => ({
@@ -15,6 +16,7 @@ const formattedDate = Number.isNaN(parsedDate.getTime())
 	? product.date
 	: parsedDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
 const paragraphs = product.description.split('\n\n').filter(Boolean);
+const shareUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
 ---
 <BaseLayout title={`${product.title} | PANO360`} description={product.excerpt}>
 	<link rel="stylesheet" href="/pannellum/pannellum.css" />
@@ -25,7 +27,54 @@ const paragraphs = product.description.split('\n\n').filter(Boolean);
 		<h1>{product.title}</h1>
 		<p class="date">{formattedDate}</p>
 
-		<div id="panorama" class="viewer" data-panorama={product.panorama} data-title={product.title}></div>
+		<div
+			id="panorama"
+			class="viewer"
+			role="region"
+			aria-label={`Panorámica 360° de ${product.title}`}
+			aria-describedby="viewer-instructions"
+			data-panorama={product.panorama}
+			data-title={product.title}
+		></div>
+		<p id="viewer-instructions" class="viewer-hint">Arrastra con el ratón o desliza con el dedo para explorar la panorámica.</p>
+
+		<section class="share" aria-labelledby="share-title">
+			<h2 id="share-title">Compartir esta panorámica</h2>
+			<div class="share-actions">
+				<a
+					class="share-link share-social whatsapp"
+					href={`https://wa.me/?text=${encodeURIComponent(`${product.title} ${shareUrl}`)}`}
+					aria-label="Compartir en WhatsApp"
+					title="Compartir en WhatsApp"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					<svg aria-hidden="true" viewBox="0 0 24 24"><path d={siWhatsapp.path} /></svg>
+				</a>
+				<a
+					class="share-link share-social facebook"
+					href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+					aria-label="Compartir en Facebook"
+					title="Compartir en Facebook"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					<svg aria-hidden="true" viewBox="0 0 24 24"><path d={siFacebook.path} /></svg>
+				</a>
+				<a
+					class="share-link share-social x-social"
+					href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(product.title)}&url=${encodeURIComponent(shareUrl)}`}
+					aria-label="Compartir en X"
+					title="Compartir en X"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					<svg aria-hidden="true" viewBox="0 0 24 24"><path d={siX.path} /></svg>
+				</a>
+				<button class="share-link copy-link" type="button" data-share-url={shareUrl}>Copiar enlace</button>
+			</div>
+			<p class="share-status" role="status" aria-live="polite"></p>
+		</section>
 
 		<div class="description">
 			{paragraphs.map((paragraph) =>
@@ -51,6 +100,33 @@ const paragraphs = product.description.split('\n\n').filter(Boolean);
 				autoLoad: true,
 				compass: true,
 			});
+		}
+	});
+
+	const copyButton = document.querySelector('.copy-link');
+	const shareStatus = document.querySelector('.share-status');
+
+	copyButton?.addEventListener('click', async () => {
+		const url = copyButton.dataset.shareUrl;
+		if (!url || !shareStatus) return;
+
+		try {
+			if (navigator.clipboard?.writeText) {
+				await navigator.clipboard.writeText(url);
+			} else {
+				const input = document.createElement('textarea');
+				input.value = url;
+				input.style.position = 'fixed';
+				input.style.opacity = '0';
+				document.body.append(input);
+				input.select();
+				const copied = document.execCommand('copy');
+				input.remove();
+				if (!copied) throw new Error('No se pudo copiar el enlace.');
+			}
+			shareStatus.textContent = 'Enlace copiado.';
+		} catch {
+			shareStatus.textContent = 'No se pudo copiar el enlace. Puedes compartirlo desde los botones.';
 		}
 	});
 </script>
@@ -80,10 +156,69 @@ const paragraphs = product.description.split('\n\n').filter(Boolean);
 	.viewer {
 		width: 100%;
 		aspect-ratio: 16 / 9;
-		border-radius: 14px;
+		border-radius: var(--radius-card);
 		overflow: hidden;
 		background: #000;
 		margin-bottom: 2rem;
+	}
+	.viewer-hint {
+		margin: -1.25rem 0 2rem;
+		color: var(--muted);
+		font-size: 0.88rem;
+	}
+	.share {
+		margin: 0 0 2rem;
+		padding: 1.25rem 0;
+		border-top: 1px solid var(--line);
+		border-bottom: 1px solid var(--line);
+	}
+	.share h2 {
+		margin: 0 0 0.85rem;
+		font-size: 1.15rem;
+	}
+	.share-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+	}
+	.share-link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 42px;
+		padding: 0.6rem 0.9rem;
+		border: 1px solid var(--line);
+		border-radius: 8px;
+		background: var(--surface);
+		color: var(--text);
+		font: inherit;
+		font-size: 0.9rem;
+		text-decoration: none;
+		cursor: pointer;
+	}
+	.share-link:hover {
+		border-color: var(--accent-2);
+		color: var(--accent-2);
+	}
+	.share-social {
+		flex: 0 0 44px;
+		width: 44px;
+		height: 44px;
+		padding: 0.55rem;
+	}
+	.share-social svg {
+		width: 100%;
+		height: 100%;
+		fill: currentColor;
+	}
+	.whatsapp { color: #25d366; }
+	.facebook { color: #1877f2; }
+	.x-social { color: var(--text); }
+	.share-status {
+		min-height: 1.4em;
+		margin: 0.65rem 0 0;
+		color: var(--muted);
+		font-size: 0.85rem;
 	}
 	.description p {
 		line-height: 1.7;
