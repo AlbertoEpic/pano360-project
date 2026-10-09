@@ -39,6 +39,9 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
 				<a href={toBasePath('mapa')} aria-current={currentPath === '/mapa' ? 'page' : undefined}>Mapa</a>
 				<a href={toBasePath('como-funciona')} aria-current={currentPath === '/como-funciona' ? 'page' : undefined}>Cómo funciona</a>
 				<a href={toBasePath('sobre')} aria-current={currentPath === '/sobre' ? 'page' : undefined}>Sobre nosotros</a>
+				<a class="external-site-link" href="https://www.soloquedalopeor.com" aria-label="Visitar Solo queda lo peor">
+					<img src="https://www.soloquedalopeor.com/_assets/favicon.Cisj02S_.png" alt="" width="40" height="40" />
+				</a>
 			</nav>
 		</header>
 
@@ -202,6 +205,18 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
 				padding: 0.45rem 0.8rem;
 				border-radius: 999px;
 				transition: all 0.2s ease;
+			}
+
+			.top-nav .external-site-link {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				padding: 0.35rem;
+			}
+
+			.external-site-link img {
+				width: 40px;
+				height: 40px;
 			}
 
 			.top-nav a:hover,
