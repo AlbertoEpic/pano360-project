@@ -1201,9 +1201,9 @@ export const productData = [
   },
   {
     "slug": "bacun-norte",
-    "title": "Bacun Norte (2.191m)",
+    "title": "Bacún Norte (2.191m)",
     "category": "Cimas",
-    "excerpt": "Vista otoñal del Bacun Norte.",
+    "excerpt": "Vista otoñal del Bacún Norte.",
     "description": "Viernes, 6 de noviembre de 2026, a las 10:21am.\n\nUno de esos días de otoño en los que la luz es especialmente bonita en la montaña.\nFotografía tomada desde el dron.",
     "date": "2026-11-06",
     "image": "/products/bacun-norte.jpg",
